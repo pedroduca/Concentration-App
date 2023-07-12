@@ -8,29 +8,43 @@
 import UIKit
 
 class ViewController: UIViewController {
-    
-    
     lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
-
     var flipCount = 0 {
         didSet {
             flipCountLabel.text = "Flips: \(flipCount)"
-
         }
     }
 
     @IBOutlet weak var flipCountLabel: UILabel!
-    
     @IBOutlet var cardButtons: [UIButton]!
-        
+    @IBOutlet weak var newGameButton: UIButton!
+    
+    override func viewDidLoad() {
+            super.viewDidLoad()
+            updateViewFromModel()
+        }
+    
     @IBAction func touchCard(_ sender: UIButton) {
         flipCount += 1
         if let cardNumber = cardButtons.firstIndex(of: sender) {
             game.chooseCard(at: cardNumber)
             updateViewFromModel()
+            
+            if game.allCardsFaceUp {
+                printContent("Toddas cartas viradas para cima")
+                newGameButton.isHidden = false
+            }
         } else {
             print("card was not in cardButtons")
         }
+    }
+    
+    
+    @IBAction func newGame(_ sender: UIButton) {
+        game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
+        flipCount = 0
+        updateViewFromModel()
+        newGameButton.isHidden = true
     }
     
     func updateViewFromModel() {
@@ -43,7 +57,9 @@ class ViewController: UIViewController {
                 button.backgroundColor = UIColor.white
             } else {
                 button.setTitle("", for: UIControl.State.normal)
-                button.backgroundColor = card.isMatched ? UIColor.clear : UIColor.systemOrange
+                if card.isMatched { button.isHidden = true} else {
+                    button.backgroundColor = UIColor.orange
+                }
             }
         }
     }
@@ -60,6 +76,5 @@ class ViewController: UIViewController {
             }
         return emoji[card.identifier] ?? "?"
     }
-    
 }
 
