@@ -12,6 +12,7 @@ struct Card
     var isFaceUp = false
     var isMatched = false
     var identifier: Int
+    var emoji: String
     
     static var identifierFactory = 0
     
@@ -22,5 +23,6 @@ struct Card
     
     init(){
         self.identifier = Card.getUniqueIdentifier()
+        self.emoji = ""
     }
 }
